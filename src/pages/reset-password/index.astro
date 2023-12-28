@@ -1,0 +1,65 @@
+---
+import BaseLayout from "src/layouts/BaseLayout.astro";
+import ResetPasswordImg from "src/assets/reset_password.png";
+import Input from "src/components/Input.astro";
+import Icon from "astro-icon";
+import { UserServices } from "src/services/user";
+
+export const prerender = false;
+
+enum InputsEnum {
+  password = "password",
+  repeatPassword = "repeat-password",
+}
+
+let success = false;
+
+if (Astro.request.method === "POST") {
+  try {
+    const data = await Astro.request.formData();
+    const password = data.get(InputsEnum.password)!.toString();
+    const repeatPassword = data.get(InputsEnum.repeatPassword)!.toString();
+
+    const user = await UserServices.changeUserPassword(password);
+
+    if (user) {
+      success = true;
+    }
+  } catch (error) {
+    if (error instanceof Error) {
+      console.error(error.message);
+    }
+  }
+}
+---
+
+<BaseLayout>
+  <div class="flex justify-center items-center flex-col">
+    <img src={ResetPasswordImg.src} class="w-[200px]" />
+    <h1 class="text-3xl font-bold mt-8 mb-4">Resetear contraseña.</h1>
+    <form
+      method="POST"
+      class="w-full flex justify-center items-center flex-col"
+    >
+      <Input
+        name={InputsEnum.password}
+        placeholder="Contraseña"
+        type="password"
+        autofocus
+        required
+      />
+      <Input
+        name={InputsEnum.repeatPassword}
+        placeholder="Repetir Contraseña"
+        type="password"
+        required
+      />
+      <div
+        class="bg-red-700 text-white rounded-full pl-2 pr-4 py-2 flex justify-start items-center"
+      >
+        <Icon name="carbon:reset" width="24" class="mr-2" />
+        <button type="submit">Resetear contraseña</button>
+      </div>
+    </form>
+  </div>
+</BaseLayout>

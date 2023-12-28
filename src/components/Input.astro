@@ -1,0 +1,13 @@
+---
+import { Icon } from "astro-icon";
+export interface props extends HTMLInputElement {}
+
+const { props } = Astro;
+---
+
+<div
+  class="relative border-solid border-gray-600 border-2 rounded-full px-2 py-4 mb-4 w-full flex justify-start items-center"
+>
+  <Icon name="ic:round-password" width="24" class="mr-2" />
+  <input class="border-none w-full outline-none" {...props} />
+</div>
